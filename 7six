@@ -1,0 +1,237 @@
+port: 7890
+socks-port: 7891
+mixed-port: 7892
+tproxy-port: 7893
+allow-lan: true
+bind-address: "*"
+mode: rule
+log-level: info
+external-controller: '0.0.0.0:9090' 
+dns:
+  enable: true
+  listen: 127.0.0.1:6450
+  ipv6: false
+  default-nameserver: 
+    - 1.2.4.8
+    - 114.4.109.102
+    - 43.255.196.45
+    - 114.114.114.114
+    - 223.5.5.5
+    - 202.152.161.227
+    - 1.1.1.1
+    - 1.0.0.1
+    - 8.8.8.8
+    - 8.8.4.4
+    - 8.8.8.7
+  enhanced-mode: fake-ip
+  fake-ip-range: 198.18.0.1/16
+  fake-ip-filter:
+    - '*.lan'
+    - '*.linksys.com'
+    - '*.linksyssmartwifi.com'
+    - 'swscan.apple.com'
+    - 'mesu.apple.com'
+    - '*.msftconnecttest.com'
+    - '*.msftncsi.com'
+    - 'time.*.com'
+    - 'time.*.gov'
+    - 'time.*.edu.id'
+    - 'time.*.apple.com'
+    - 'time1.*.com'
+    - 'time2.*.com'
+    - 'time3.*.com'
+    - 'time4.*.com'
+    - 'time5.*.com'
+    - 'time6.*.com'
+    - 'time7.*.com'
+    - 'ntp.*.com'
+    - 'ntp.*.com'
+    - 'ntp1.*.com'
+    - 'ntp2.*.com'
+    - 'ntp3.*.com'
+    - 'ntp4.*.com'
+    - 'ntp5.*.com'
+    - 'ntp6.*.com'
+    - 'ntp7.*.com'
+    - '*.time.id'
+    - '*.ntp.org.id'
+    - '+.pool.ntp.org'
+    - '+.srv.nintendo.net'
+    - '+.stun.playstation.net'
+    - 'xbox.*.microsoft.com'
+    - '+.xboxlive.com'
+    - 'localhost.ptlogin2.qq.com'
+    - 'proxy.golang.org'
+    - 'stun.*.*'
+    - 'stun.*.*.*'
+  nameserver: 
+    - 1.2.4.8
+    - 114.114.114.114
+    - 223.5.5.5
+    - 1.1.1.1
+    - 1.0.0.1
+    - 8.8.8.8
+    - 8.8.4.4
+    - 8.8.8.7
+  fallback: 
+    - tcp://1.0.0.1:53
+    - tcp://1.1.1.1:53
+    - tcp://8.8.8.8:53
+    - tcp://8.8.4.4:53
+    - tcp://8.8.8.7:53
+    - tls://1.0.0.1:443
+    - tls://1.1.1.1:443
+    - tls://8.8.8.8:443
+    - tls://8.8.4.4:443
+    - tls://8.8.8.7:443
+  fallback-filter: 
+  geoip: true
+  ipcidr: 
+    - 114.5.12.0/22
+    - 43.255.196.0/22
+    - 202.3.208.0/20
+    - 202.152.161.0/24
+    - 192.168.43.1/24
+    - 216.239.32.0/19
+    - 112.215.0.0/16
+    - 23.219.0.0/16
+    - 203.205.155.0/19
+    - 150.109.0.0/16
+    - 23.32.0.0/11
+    - 23.64.0.0/14
+    - 72.14.192.0/18
+    - 74.125.0.0/16
+    - 172.217.0.0/16
+    - 104.64.0.0/10
+  domain:
+    - www.google.com
+    - talkgadget.google.com 
+    - meet.google.com
+external-ui: folder
+tun:
+  enable: true
+secret: ""
+
+
+proxy-groups:
+- name: 7six
+  type: select
+  proxies:
+  - vmess
+  - Trojan
+  - shadowsock
+  - Auto Vmess
+  - Auto Trojan
+  - Auto shadowsock
+  - LB vmess
+  - LB Trojan
+
+- name: vmess
+  type: select
+  use:
+  - 7six vmess
+
+- name: Trojan
+  type: select
+  use:
+  - 7six trojan
+
+- name: shadowsock
+  type: select
+  use:
+  - 7six shadowsock
+
+- name: Auto Vmess
+  type: url-test
+  tolerance: 50
+  use:
+  - 7six vmess
+
+- name: Auto Trojan
+  type: url-test
+  tolerance: 50
+  use:
+  - 7six trojan
+
+- name: Auto shadowsock
+  type: url-test
+  tolerance: 50
+  use:
+  - 7six shadowsock
+
+- name: LB vmess
+  type: load-balance
+  strategy: consistent-hashing
+  disable-udp: false
+  use:
+  - 7six vmess
+
+- name: LB Trojan
+  type: load-balance
+  strategy: consistent-hashing
+  disable-udp: false
+  use:
+  - 7six trojan
+
+proxy-providers:
+  7six vmess:
+    type: http
+    path: ./vmess.yaml
+    url: https://raw.githubusercontent.com/7siix/provider/main/vmess.yaml?token=AVL7QD2TKEOVMXTWHNENIJ3BFL72K
+    interval: 3600
+    health-check:
+      enable: true
+      interval: 300
+      lazy: true
+      url: http://www.gstatic.com/generate_204
+
+  7six trojan:
+    type: http
+    path: ./trojan.yaml
+    url: https://raw.githubusercontent.com/7siix/provider/main/trojan.yaml?token=AVL7QD744MKIEIL6TUCRSTLBFL75W
+    interval: 3600
+    health-check:
+      enable: true
+      interval: 300
+      lazy: true
+      url: http://www.gstatic.com/generate_204
+
+  7six shadowsock:
+    type: http
+    path: ./shadowsock.yaml
+    url: https://raw.githubusercontent.com/7siix/provider/main/shadowsock.yaml?token=AVL7QD3YBFZBDP5TVOMZM6TBFL77I
+    interval: 3600
+    health-check:
+      enable: true
+      interval: 300
+      lazy: true
+      url: http://www.gstatic.com/generate_204
+
+rules:
+  - IP-CIDR,192.168.0.0/16,DIRECT,no-resolve
+  - IP-CIDR,10.0.0.0/8,DIRECT,no-resolve
+  - IP-CIDR,172.16.0.0/12,DIRECT,no-resolve
+  - IP-CIDR,127.0.0.0/8,DIRECT,no-resolve
+  - IP-CIDR,100.64.0.0/10,DIRECT,no-resolve
+  - IP-CIDR6,::1/128,DIRECT,no-resolve
+  - IP-CIDR6,fc00::/7,DIRECT,no-resolve
+  - IP-CIDR6,fe80::/10,DIRECT,no-resolve
+  - IP-CIDR6,fd00::/8,DIRECT,no-resolve
+  - DOMAIN-SUFFIX,ad.com,REJECT
+  - DOMAIN,analytics.google.com,REJECT
+  - DOMAIN,analyticsinsights-pa.googleapis.com,REJECT
+  - DOMAIN,analyticsreporting.googleapis.com,REJECT
+  - DOMAIN-SUFFIX,doubleclick.net,REJECT
+  - DOMAIN-SUFFIX,googleadservices.com,REJECT
+  - DOMAIN-SUFFIX,googleadsserving.cn,REJECT
+  - DOMAIN-SUFFIX,googlesyndication.com,REJECT
+  - DOMAIN-SUFFIX,googletagmanager.com,REJECT
+  - DOMAIN-SUFFIX,googletagservices.com,REJECT
+  - DOMAIN-SUFFIX,google-analytics.com,REJECT
+  - DOMAIN-KEYWORD,adservice,REJECT
+  - DOMAIN-KEYWORD,analytics,REJECT
+  - DOMAIN-KEYWORD,analysis,REJECT
+  - SRC-IP-CIDR,192.168.1.201/32,DIRECT
+  - IP-CIDR,198.18.0.1/16,REJECT,no-resolve
+  - GEOIP,IR,DIRECT
+  - MATCH,7six
