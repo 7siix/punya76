@@ -177,7 +177,7 @@ proxy-providers:
   7six vmess:
     type: http
     path: ./vmess.yaml
-    url: https://raw.githubusercontent.com/7siix/provider/main/vmess.yaml?token=AVL7QD2TKEOVMXTWHNENIJ3BFL72K
+    url: https://raw.githubusercontent.com/7siix/provider/main/vmess.yaml?token=AVL7QDZO44S4SGHQJ4BVFI3BFNLO2
     interval: 3600
     health-check:
       enable: true
@@ -188,7 +188,7 @@ proxy-providers:
   7six trojan:
     type: http
     path: ./trojan.yaml
-    url: https://raw.githubusercontent.com/7siix/provider/main/trojan.yaml?token=AVL7QD744MKIEIL6TUCRSTLBFL75W
+    url: https://raw.githubusercontent.com/7siix/provider/main/trojan.yaml?token=AVL7QD7SYIQSWBOFDRZ2SKDBFNLUA
     interval: 3600
     health-check:
       enable: true
@@ -199,13 +199,21 @@ proxy-providers:
   7six shadowsock:
     type: http
     path: ./shadowsock.yaml
-    url: https://raw.githubusercontent.com/7siix/provider/main/shadowsock.yaml?token=AVL7QD3YBFZBDP5TVOMZM6TBFL77I
+    url: https://raw.githubusercontent.com/7siix/provider/main/shadowsock.yaml?token=AVL7QD3BWOTMLCMT5SPUQ4DBFNLVW
     interval: 3600
     health-check:
       enable: true
       interval: 300
       lazy: true
       url: http://www.gstatic.com/generate_204
+
+rule-providers:
+  Adblock :
+    type: http
+    behavior: domain
+    url: https://raw.githubusercontent.com/7siix/rule-provider/main/adblock.yaml
+    path: ./ruleset/adblock.yaml
+    interval: 86400
 
 rules:
   - IP-CIDR,192.168.0.0/16,DIRECT,no-resolve
@@ -234,4 +242,5 @@ rules:
   - SRC-IP-CIDR,192.168.1.201/32,DIRECT
   - IP-CIDR,198.18.0.1/16,REJECT,no-resolve
   - GEOIP,IR,DIRECT
+  - RULE-SET,Adblock,REJECT
   - MATCH,7six
