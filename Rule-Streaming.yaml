@@ -254,4 +254,4 @@ payload:
   - DOMAIN-SUFFIX,tiktokv.com
   - DOMAIN-KEYWORD,tiktokcdn-
  #Hago
-  -   - PROCESS-NAME,com.yy.hiyo
+  - PROCESS-NAME,com.yy.hiyo
